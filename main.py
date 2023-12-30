@@ -1,33 +1,43 @@
+from time import sleep
+
 from game_board import GameBoard
+from game_manager import GameManager
+from player_manager import PlayerManager
 
-def get_user_input(played_tiles):
-    valid = False
-    x = "0"
-    while valid is not True:
-        x = input("Type the tile number to place your marker: ")
-        if x in played_tiles:
-            print("That place is already marked, try a different tile!")
-        elif not (49 <= ord(x) <= 57):
-            print("That's not a valid input please try again!")
-        else:
-            valid = True
-    return x  
+manager: GameManager = GameManager()
+game_board: GameBoard = GameBoard()
 
 
-played_set = set()
-winner = "-"
-game_loop = 0
-game_board = GameBoard()
-while winner == "-" and game_loop < 9:
+players: tuple[PlayerManager, PlayerManager] | None = manager.get_players()
+
+while players is None:
+    manager.get_opponent_pref()
+
+game_loop: int = 0
+while manager.winner is None and game_loop < 9:
     game_board.print_board()
-    marker_to_place = "X" if game_loop % 2 == 0 else "O"
-    user_input = get_user_input(played_set)
-    played_set.add(user_input)
-    game_board.place_marker(int(user_input), marker_to_place)
+    print(
+        f"{players[0].name}'s marker is '{players[0].marker}'; {players[1].name}'s marker is '{players[1].marker}'"
+    )
 
-    winner = game_board.check_winner()
+    current_player: PlayerManager = players[game_loop % 2]
+
+    print(f"{current_player.name}({current_player.marker})'s turn...")
+
+    current_play: str = ""
+    if current_player.name == "Computer":
+        sleep(1)
+        current_play = str(manager.computer_plays())
+    else:
+        current_play = manager.get_user_input()
+
+    manager.played_tiles.add(current_play)
+
+    game_board.place_marker(pos=int(current_play), marker=current_player.marker)
+
+    round_winner: PlayerManager | None = game_board.check_winner(players_tuple=players)
+    manager.set_winner(new_winner=round_winner)
     game_loop += 1
 
 game_board.print_board()
-print(f"Winner is {winner}")
-
+manager.print_winner()
