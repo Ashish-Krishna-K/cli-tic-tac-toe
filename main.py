@@ -12,6 +12,7 @@ players: tuple[PlayerManager, PlayerManager] | None = manager.get_players()
 
 while players is None:
     manager.get_opponent_pref()
+    players = manager.get_players()
 
 game_loop: int = 0
 while manager.winner is None and game_loop < 9:
@@ -22,7 +23,7 @@ while manager.winner is None and game_loop < 9:
 
     current_player: PlayerManager = players[game_loop % 2]
 
-    print(f"{current_player.name}({current_player.marker})'s turn...")
+    print(f"{current_player.name} ({current_player.marker})'s turn...")
 
     current_play: str = ""
     if current_player.name == "Computer":
@@ -31,7 +32,7 @@ while manager.winner is None and game_loop < 9:
     else:
         current_play = manager.get_user_input()
 
-    manager.played_tiles.add(current_play)
+    manager.add_played_tile(current_play)
 
     game_board.place_marker(pos=int(current_play), marker=current_player.marker)
 

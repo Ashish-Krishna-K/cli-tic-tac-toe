@@ -4,7 +4,7 @@ from player_manager import PlayerManager
 
 RESET = "\033[0m"
 YELLOW = "\033[93m"
-BLUE= "\033[94m"
+BLUE = "\033[94m"
 
 
 def get_row_index(number: int) -> int:
@@ -19,14 +19,18 @@ class GameBoard:
     """A class to handle the gameboard"""
 
     def __init__(self) -> None:
-        self.board: list[list[str]] = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']]
+        self.board: list[list[str]] = [
+            ["1", "2", "3"],
+            ["4", "5", "6"],
+            ["7", "8", "9"],
+        ]
 
     def print_board(self) -> None:
         """Prints the board to the console"""
-        os.system("clear")
-        for (i, row) in enumerate(self.board):
+        os.system("cls" if os.name == "nt" else "clear")
+        for i, row in enumerate(self.board):
             print("\n")
-            for (j, cell) in enumerate(row):
+            for j, cell in enumerate(row):
                 if cell == "X":
                     color: str = YELLOW
                 elif cell == "O":
